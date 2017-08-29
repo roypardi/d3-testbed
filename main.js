@@ -38,7 +38,7 @@ app.on('ready', function () {
         mainWindow.show()
     })
 
-
+    // 
     const menuTemplate = [
         {
             label: 'template',
