@@ -1,0 +1,265 @@
+ html,
+ body {
+     height: 100%;
+     overflow: hidden;
+     background-color: #222;
+     margin: 0;
+     /*margin_content: 0;*/
+ }
+ /*#container {
+     position: fixed;
+     left: 0px;
+     right: 0px;
+     top: 0px;
+     bottom: 0px;
+ }*/
+
+ .zoom {
+     cursor: move;
+     fill: none;
+     pointer-events: all;
+ }
+
+ .event-marker {
+     fill: white;
+ }
+
+ .leaderLine {
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .axis text {
+     font: 14px sans-serif;
+     fill: white;
+ }
+
+ .axis path,
+ .axis line {
+     fill: none;
+     stroke: gray;
+     /*https://coderwall.com/p/ufldzw/for-crisp-edges-use-anything-but-crispedges*/
+     /*shape-rendering: crispEdges;*/
+ }
+
+ .event {
+     /*clip-path: url(#clip);*/
+ }
+ /*.event-text {
+            
+            fill: white;
+            text-shadow: 3px 2px gray;
+            font-size: 16px;
+            font-family: sans-serif;
+        
+        }*/
+ /*
+        .event-text-blue {
+            fill: blue;
+            text-shadow: 3px 2px gray;
+            font-size: 16px;
+            font-family: sans-serif;
+        }*/
+
+ .event-title {
+     /*color: white;*/
+     fill: white;
+     /*text-shadow: 3px 2px gray;*/
+     font-size: 16px;
+     font-family: sans-serif;
+ }
+
+ .event-subTitle {
+     /*color: white;*/
+     fill: gray;
+     font-size: 14px;
+     font-family: sans-serif;
+ }
+
+ .event-circle {
+     fill: mediumblue;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-circle-selected {
+     fill: yellow;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-square {
+     fill: greenyellow;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-square-selected {
+     fill: orange;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-triangle {
+     fill: red;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-triangle-selected {
+     fill: green;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-diamond {
+     fill: yellow;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-diamond-selected {
+     fill: red;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-star {
+     fill: wheat;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-star-selected {
+     fill: green;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-cross {
+     fill: red;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-cross-selected {
+     fill: pink;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-wye {
+     fill: purple;
+     stroke: gray;
+     stroke-width: 2px;
+ }
+
+ .event-wye-selected {
+     fill: plum;
+     stroke: blue;
+     stroke-width: 2px;
+ }
+
+ .event-box {
+     fill: yellow;
+     stroke: blue;
+     stroke-width: 5px;
+ }
+
+ .event-content {
+     /*fill: yellow;*/
+     /*stroke: gray;*/
+     /*stroke-width: 5px;*/
+     /*clip-path: url(#clip);*/
+ }
+
+ .event-box-hilite {
+     fill: blue;
+     stroke: yellow;
+ }
+ /*make all text unselectable*/
+
+ text {
+     pointer-events: none;
+     -webkit-user-select: none;
+     -khtml-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     -o-user-select: none;
+     user-select: none;
+ }
+
+ .svg-container {
+     width: 100vw;
+     height: 100vh;
+     overflow: hidden;
+     margin: 0 auto;
+     /*background-color: #ffff00;*/
+ }
+
+ .svg-content-responsive {
+     display: block;
+     margin: 0 auto;
+     background-color: #222;
+ }
+ /*.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+    background-color: #ffff00;
+}*/
+ /*.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #0000ff;
+}*/
+
+ .my-svg {
+     /* svg into : object, img or inline */
+     display: block;
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     /* only required for <img /> */
+ }
+
+ .addDeleteButtons {
+     margin: 10px;
+ }
+
+ body.pushable>.pusher {
+     background: #222;
+ }
+
+ .timelineMenuBar {
+     position: absolute;
+     top: 5px;
+     left: 5px;
+     /* width: 300px;  */
+     /* background: red; */
+ }
+
+ /* Timeline states dropdown */
+ .ui.selection.dropdown {
+     background: #222;
+     color: gray;
+     /* border: 1px solid #2185D0; */
+     line-height: 1em;
+     min-width: 8em;
+     min-height: 2.71428571em;
+     /* padding: 0.78571429em 2.1em 0.78571429em 1em; */
+ }
+
+ .ui.dropdown .menu {
+     background: #2185D0;
+ }
+
+ .ui.selection.visible.dropdown>.text:not(.default) {
+     color: #2185D0;
+ }

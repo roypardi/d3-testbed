@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>RESIZE</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .svg-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: darkolivegreen;
+        }
+
+        .svg-content-responsive {
+            display: block;
+            background-color: darkorchid;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background-color: #f49797;
+            margin: 0;
+        }
+
+
+        .scrubby {
+            vertical-align: bottom;
+            position: relative;
+            top: 10%;
+            /*bottom: 10px;*/
+            /*transform: perspective(1px) translateY(-50%);*/
+            background-color: lightskyblue;
+        }
+        /*#container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }*/
+        /*.svg-container {
+      display: inline-block;
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%;
+      vertical-align: top;
+      overflow: hidden;
+      background-color: orange;
+    }*/
+        /*svg-content-responsive {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: purple;
+    }*/
+    </style>
+
+
+</head>
+
+
+<body>
+    <div id="container"></div>
+    <div id="scrubber"></div>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script>
+        var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+        var svgWidth = 1024 - (margin.left + margin.right)
+        var svgHeight = 600 - (margin.top + margin.bottom)
+
+        console.log('please');
+
+        d3.select("div#container")
+            // .classed("svg-container", true)
+            .append("svg")
+            //responsive SVG needs these 2 attributes and no width and height attr
+            .attr("preserveAspectRatio", "none")
+            // .attr("preserveAspectRatio", "xMidYMax slice")
+            // .attr("preserveAspectRatio", "xMaxYMid slice")
+            // .attr("preserveAspectRatio", "xMinYMin meet")
+            // .attr("preserveAspectRatio", "xMinYMid slice")
+            //  .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", function () {
+                return 0 + " " + 0 + " " + svgWidth + " " + svgHeight;
+            })
+            // .classed("svg-content-responsive", true)
+            // .attr("width", "100%")
+            // .attr("height", "100%")
+            .attr("x", margin.left)
+            .attr("y", margin.top);
+
+        svg = d3.select("svg");
+        svg.append("rect")
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("width", svgWidth - (margin.left + margin.right))
+            .attr("height", 50)
+            .style("fill", "#ff0000");
+
+        svg.append("image")
+            .attr("x", margin.left)
+            .attr("y", 200)
+            .attr("width", 200)
+            .attr("height", 200)
+            .attr("preserveAspectRatio", "xMinYMin slice")
+            .attr("xlink:href", function (d, i) {
+                return __dirname + "/assets/images/" + "square.jpg";
+            });
+
+        svg.append("rect")
+            .attr("x", margin.left)
+            .attr("y", svgHeight - (50 + margin.bottom))
+            .attr("width", svgWidth - (margin.left + margin.right))
+            .attr("height", 50)
+            .style("fill", "#00ff00");
+
+
+        //---------------
+
+        svg2 = d3.select("div#scrubber")
+            .classed("scrubby", true)
+            // .classed("svg-container", true)
+            .append("svg");
+        //responsive SVG needs these 2 attributes and no width and height attr
+        // .attr("preserveAspectRatio", "xMidYMax slice")
+        // .attr("preserveAspectRatio", "xMaxYMid slice")
+        // .attr("preserveAspectRatio", "xMinYMin meet")
+        svg2
+            // .attr("preserveAspectRatio", "xMinYMid slice")
+            .attr("preserveAspectRatio", "none")
+            //  .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", function () {
+                return 0 + " " + 0 + " " + svgWidth + " " + 50;
+            })
+            // .classed("svg-content-responsive", true)
+
+            // .attr("width", "100%")
+            // .attr("height", "30%")
+            .attr("x", margin.left)
+            .attr("y", 0)
+            .style("fill", "#ffffff");
+        // .attr("y", margin.bottom - 100);
+
+        console.log('aaa');
+
+
+        svg2.append("rect")
+            .attr("x", margin.left)
+            .attr("y", 0)
+            .attr("width", svgWidth - (margin.left + margin.right))
+            .attr("height", 50)
+            .style("fill", "#cccccc");
+
+
+        d3.select(window).on('resize', resize);
+
+
+        var resizeCnt = 0
+        function resize() {
+            resizeCnt++
+
+            var w = parseInt(d3.select('#container').style('width'), 10) - (margin.left + margin.right);
+            var h = parseInt(d3.select('#container').style('height'), 10) - (margin.top + margin.bottom)
+
+
+            if (svgWidth == w) {
+                console.log("svgWidth match");
+            }
+
+            if (svgHeight == h) {
+                console.log("svgHeight match");
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>

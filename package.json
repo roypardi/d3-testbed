@@ -1,0 +1,29 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "template",
+  "version-string": {
+    "CompanyName": "Roy Pardi",
+    "FileDescription": "template",
+    "OriginalFilename": "template",
+    "ProductName": "template",
+    "InternalName": "template"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "APP_DEV=true electron .",
+    "package": "electron-packager . --tmpdir=false --version=0.35.6 --overwrite  --out=release-builds",
+    "package-mac": "electron-packager . --overwrite --tmpdir=false --platform=darwin --arch=x64  --prune=true --out=release-builds",
+    "package-win": "electron-packager . --overwrite --tmpdir=false --platform=win32 --arch=ia32 --asar=true  --prune=true --out=release-builds"
+  },
+  "author": "Roy Pardi",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.6.1",
+    "electron-packager": "^8.5.2",
+    "electron-reload": "^1.1.0",
+    "handlebars": "^4.0.6",
+    "jsonfile": "^2.4.0",
+    "path": "^0.12.7"
+  }
+}

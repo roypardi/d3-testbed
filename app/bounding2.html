@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+
+    <script src="js/d3.js"></script>
+
+    <!-- https://github.com/lucasb-eyer/d3-boundingbox -->
+    <script src="js/d3.bbox.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style>
+        /* body {
+            margin: 0;
+            padding: 0;
+        } */
+        /* html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background-color: slategray;
+            margin: 0;
+        } */
+
+        .box {
+            border: 1px black;
+            border-radius: 10px;
+        }
+
+        .resizingContainer,
+        .resizingSquare {
+            cursor: nesw-resize;
+        }
+
+        .boxy {
+            stroke: red;
+            stroke-width: 3;
+            fill: aquamarine;
+        }
+
+        .handle {
+            stroke: black;
+            stroke-width: 1;
+            fill: white;
+        }
+
+        .marquee {
+            stroke: greenyellow;
+            stroke-width: 1;
+            fill: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+
+    <script>
+        var boxWidth = 1024;
+        var boxHeight = 768;
+
+        var dataSet = [{ x: 500, y: 200, state: false }, { x: 200, y: 300, state: false }];
+
+        var svg = d3.select('body #container')
+            .append('svg')
+            .attr('class', 'box')
+            .attr('width', boxWidth)
+            .attr('height', boxHeight)
+        // .on("click", endTransform);
+
+
+        var resizeHandle = d3.drag()
+            .subject(function () {
+                var t = d3.select(this);
+                return { x: t.attr("x"), y: t.attr("y") };
+            })
+            .on('drag', function () {
+
+                var eGroup = d3.select(this.parentNode);
+                console.log('eGroup',eGroup);
+                var t = d3.select(this);
+                t.attr("x", d3.event.x)
+                    .attr("y", d3.event.y);
+
+                var id = t.attr("id");
+
+                switch (id) {
+                    case "tl":
+
+                        break
+                    case "tr":
+
+                        break
+                    case "bl":
+
+                        break
+                    case "br":
+
+                        break
+                }
+                var e = d3.event;
+                // console.log('this', e, this);
+                // console.log('id', t.attr("id"));
+                // d3.select(this)
+                //     .attr("x", d3.event.x)
+                //     .attr("y", d3.event.y);
+            })
+
+
+        var g = svg.selectAll("g")
+            .data(dataSet)
+            .enter()
+            .append("g")
+            .append("rect")
+            .attr("x", function (d, i) {
+                return d.x;
+            })
+            .attr("y", function (d, i) {
+                return d.y;
+            })
+            .attr("width", 100)
+            .attr("height", 100)
+            .classed("boxy", true)
+            .on("click", handleClick);
+
+            
+        // .on("click", function (d) {
+        //     console.log('click', d);
+
+        // })
+
+        function handleClick(d) {
+            d3.event.stopPropagation()
+            var eGroup = d3.select(this.parentNode);
+
+            var h = eGroup.selectAll("rect")
+
+
+            if (d.state == false) {
+                d.state = true;
+
+                var bbox = this.getBBox();
+                // console.log('bbox', bbox);
+
+                // eGroup.append("rect")
+                //     .attr("x", bbox.x)
+                //     .attr("y", bbox.y)
+                //     .attr("width", bbox.width)
+                //     .attr("height", bbox.height)
+                //     .classed("marquee", true);
+                // .on("mousemove", marqueeClick);
+
+
+                eGroup.append("rect")
+                    .attr("x", function (d, i) {
+                        return bbox.x - 7;
+                    })
+                    .attr("y", function (d, i) {
+                        return bbox.y - 7;
+                    })
+                    .attr("id", "tl")
+                    .attr("width", 14)
+                    .attr("height", 14)
+                    .classed("handle", true)
+                    .call(resizeHandle);
+
+                eGroup.append("rect")
+                    .attr("x", function (d, i) {
+                        return (bbox.x + bbox.width) - 7;
+                    })
+                    .attr("y", function (d, i) {
+                        return bbox.y - 7;
+                    })
+                    .attr("id", "tr")
+                    .attr("width", 14)
+                    .attr("height", 14)
+                    .classed("handle", true)
+                    .call(resizeHandle);
+
+                eGroup.append("rect")
+                    .attr("x", function (d, i) {
+                        return (bbox.x + bbox.width) - 7;
+                    })
+                    .attr("y", function (d, i) {
+                        return (bbox.y + bbox.height) - 7;
+                    })
+                    .attr("id", "br")
+                    .attr("width", 14)
+                    .attr("height", 14)
+                    .classed("handle", true)
+                    .call(resizeHandle);
+
+                eGroup.append("rect")
+                    .attr("x", function (d, i) {
+                        return bbox.x - 7;
+                    })
+                    .attr("y", function (d, i) {
+                        return (bbox.y + bbox.height) - 7;
+                    })
+                    .attr("id", "bl")
+                    .attr("width", 14)
+                    .attr("height", 14)
+                    .classed("handle", true)
+                    .call(resizeHandle);
+
+            } else {
+                d.state = false;
+                eGroup.selectAll("rect.handle").remove()
+            }
+
+            console.log('handleClick', d3.select(this.parentNode));
+            // console.log('handleClick', this);
+            // console.log('handleClick', d3.event);
+        }
+
+        function marqueeClick(d) {
+            d3.event.stopPropagation()
+            console.log('marqueeClick');
+
+        }
+        function endTransform() {
+            console.log('endTransform');
+
+            // svg.selectAll("rect.handle").remove()
+
+        }
+        // svg.append("rect")
+        //     .attr("x", 100)
+        //     .attr("y", 100)
+        //     .attr("width", 100)
+        //     .attr("height", 100)
+        //     .classed("boxy", true)
+
+
+        // var boxWidth = 1300;
+        // var boxHeight = 600;
+
+        // var box = d3.select('body')
+        //     .append('svg')
+        //     .attr('class', 'box')
+        //     .attr('width', boxWidth)
+        //     .attr('height', boxHeight);
+
+        // var drag = d3.drag()
+        //     .on('drag', function () {
+        //         console.log('drag', this, d3.event.x, d3.event.y);
+
+        //         // d3.select(this).selectAll('*')
+        //         //     .attr('cx', d3.event.x)
+        //         //     .attr('cy', d3.event.y);
+
+        //         g.selectAll('*')
+        //             .attr('cx', d3.event.x)
+        //             .attr('cy', d3.event.y);
+        //     });
+
+        // var resize = d3.drag()
+        //     .on('drag', function () {
+        //         g.selectAll('.resizingContainer')
+        //             .attr('r', function (c) {
+        //                 return Math.pow(Math.pow(this.attributes.cx.value - d3.event.x, 2) + Math.pow(this.attributes.cy.value - d3.event.y, 2), 0.5) + 6;
+        //             });
+        //         g.selectAll('.circle')
+        //             .attr('r', function (c) {
+        //                 return Math.pow(Math.pow(this.attributes.cx.value - d3.event.x, 2) + Math.pow(this.attributes.cy.value - d3.event.y, 2), 0.5);
+        //             });
+        //     });
+
+
+        // var g = box.selectAll('.draggableCircle')
+        //     .data([{
+        //         x: 65,
+        //         y: 55,
+        //         r: 25
+        //     }])
+        //     .enter()
+        //     .append('g')
+        //     .attr('class', 'draggableCircle');
+
+        // g.append('svg:circle')
+        //     .attr('class', 'resizingContainer')
+        //     .attr('cx', function (d) {
+        //         return d.x;
+        //     })
+        //     .attr('cy', function (d) {
+        //         return d.y;
+        //     })
+        //     .attr('r', function (d) {
+        //         return d.r + 6;
+        //     })
+        //     .style('fill', '#999')
+        //     .call(resize);
+
+        // g.append('svg:circle')
+        //     .attr('class', 'circle')
+        //     .attr('cx', function (d) {
+        //         return d.x;
+        //     })
+        //     .attr('cy', function (d) {
+        //         return d.y;
+        //     })
+        //     .attr('r', function (d) {
+        //         return d.r;
+        //     })
+        //     .call(drag)
+        //     .style('fill', 'black');
+
+
+        // var distance = function (p1, p2) {
+        //     return Math.pow(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2), 0.5);
+        // };
+
+        // var resize2 = d3.drag()
+        //     .on('drag', function () {
+        //         var c = g2.selectAll('.resizingSquare');
+        //         var s = g2.selectAll('.square');
+
+        //         var e = d3.event;
+        //         var x = Number(this.attributes.x.value);
+        //         var y = Number(this.attributes.y.value);
+        //         var w = Number(this.attributes.width.value);
+        //         var h = Number(this.attributes.height.value);
+        //         var c1 = { x: x, y: y };
+        //         var c2 = { x: x + w, y: y };
+        //         var c3 = { x: x + w, y: y + h };
+        //         var c4 = { x: x, y: y + h };
+
+        //         // figure out which corner this is closest to
+        //         var d = [];
+        //         var m1 = distance(e, c1);
+        //         var m2 = distance(e, c2);
+        //         var m3 = distance(e, c3);
+        //         var m4 = distance(e, c4);
+        //         switch (Math.min(m1, m2, m3, m4)) {
+        //             case m3:
+        //                 c
+        //                     .attr('width', function () { return w + (e.x - c3.x) + 12; })
+        //                     .attr('height', function () { return h + (e.y - c3.y) + 12; });
+        //                 s
+        //                     .attr('width', function () { return w + (e.x - c3.x); })
+        //                     .attr('height', function () { return h + (e.y - c3.y); });
+        //                 break;
+        //         }
+        //     });
+
+        // var g2 = box.selectAll('.draggableSquare')
+        //     .data([{
+        //         x: 65,
+        //         y: 155,
+        //         width: 70,
+        //         height: 70
+        //     }])
+        //     .enter()
+        //     .append('g')
+        //     .attr('class', 'draggableSquare');
+
+        // g2
+        //     .append('svg:rect')
+        //     .attr('class', 'resizingSquare')
+        //     .attr("width", function (d) {
+        //         return d.width + 12;
+        //     })
+        //     .attr("height", function (d) {
+        //         return d.height + 12;
+        //     })
+        //     .attr("x", function (d) {
+        //         return d.x - 6;
+        //     })
+        //     .attr("y", function (d) {
+        //         return d.y - 6;
+        //     })
+        //     .attr("rx", 6)
+        //     .attr("ry", 6)
+        //     .style("fill", '#999')
+        //     .call(resize2);
+
+        // g2
+        //     .append('svg:rect')
+        //     .attr('class', 'square')
+        //     .attr("width", function (d) {
+        //         return d.width;
+        //     })
+        //     .attr("height", function (d) {
+        //         return d.height;
+        //     })
+        //     .attr("x", function (d) {
+        //         return d.x;
+        //     })
+        //     .attr("y", function (d) {
+        //         return d.y;
+        //     })
+        //     .attr("rx", 6)
+        //     .attr("ry", 6)
+        //     .style("fill", d3.scaleOrdinal(d3.schemeCategory20));
+    </script>
+</body>
+
+</html>

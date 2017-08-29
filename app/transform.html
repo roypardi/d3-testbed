@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+
+    <script src="js/d3.js"></script>
+
+    <!-- https://github.com/lucasb-eyer/d3-boundingbox -->
+    <script src="js/d3.bbox.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0; 
+        }
+
+        .svg-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: darkolivegreen;
+        }
+
+        .svg-content-responsive {
+            display: block;
+            background-color: darkorchid;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background-color: slategray;
+            margin: 0;
+        }
+
+
+        .scrubby {
+            vertical-align: bottom;
+            position: relative;
+            top: 10%;
+            /*bottom: 10px;*/
+            /*transform: perspective(1px) translateY(-50%);*/
+            background-color: lightskyblue;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+
+    <script>
+        const path = require('path');
+        var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+        var svgWidth = 1024 - (margin.left + margin.right)
+        var svgHeight = 600 - (margin.top + margin.bottom)
+        var horizontal_margin = 20;
+        var vertical_margin = 10;
+        var spacer = 10;
+        var eventImageWidth = 160;
+        var eventImageHeight = 120;
+
+        var svg;
+        var content;
+
+        // var bb = d3lb.bbox();
+
+        var jsonData = {};
+        jsonData.events = [
+            {
+                "class": "apple",
+                "icon": "star",
+                "actualDate": "November 9 2015 2:00 pm",
+                "positionDate": "November 9 2015, 2:00:00 PM",
+                "title": "Main Title",
+                "subTitle": "This is the subtitle",
+                "imageSet": [
+                    "square.jpg"
+                ],
+                "yPos": 0.6757413709285367,
+                "state": 1,
+                "id": 1
+            }]
+
+        var drag_this = d3.drag().subject(this)
+            .on('start', function (d) {
+                if (d3.event.sourceEvent.altKey == true) {
+                    if (d.x1) {
+                        d.x1 = d3.event.x - d.xt;
+                        d.y1 = d3.event.y - d.yt;
+                    } else {
+                        d.x1 = d3.event.x;
+                        d.y1 = d3.event.y;
+                    }
+                }
+            })
+            .on('drag', function (d) {
+                if (d3.event.sourceEvent.altKey == true) {
+
+                    d3.select(this)
+                        .attr("transform", "translate(" + (d3.event.x) + "," + (d3.event.y) + ")");
+
+                    d.xt = d3.event.x - d.x1;
+                    d.yt = d3.event.y - d.y1;
+                    d.yPos = d3.event.y / margin_content.bottom;
+                    d.positionDate = x.invert(d3.event.x);
+
+                    var leader = d3.select(d.leader)
+                        .attr("x1", function (d, i) {
+                            return horizontal_margin + x(new Date(d.actualDate));
+                        })
+                        .attr("y1", cV)
+                        .attr("x2", function (d, i) {
+                            return x(d.positionDate) + margin_content.left
+                        })
+                        .attr("y2", function (d, i) {
+                            return d.yPos * margin_content.bottom;
+                        });
+                }
+            });
+
+
+        function eventClick(d, i) {
+            if (d3.event.altKey == false) {
+                if (d.state == false) {
+
+                    if (d.icon == undefined || d.icon == "circle") {
+                        d3.select(this).classed("event-circle-selected", true);
+                    } else {
+                        var className = "event-" + d.icon + "-selected"
+                        d3.select(this).classed(className, true);
+                    }
+
+                    d.state = true;
+                    d3.select(this.parentNode)
+                        .selectAll('.event-content')
+                        .style("visibility", "visible");
+                } else {
+
+                    if (d.icon == undefined || d.icon == "circle") {
+                        d3.select(this).classed("event-circle-selected", false);
+                    } else {
+                        var className = "event-" + d.icon + "-selected"
+                        d3.select(this).classed(className, false);
+                    }
+
+                    d.state = false;
+                    d3.select(this.parentNode)
+                        .selectAll('.event-content')
+                        .style("visibility", "hidden");
+                }
+            }
+        }
+
+        var container = d3.select("div#container")
+        svg = container.append("svg")
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        content = svg.append("g")
+            .attr("class", "content")
+            .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+        var events = content.selectAll("g").data(jsonData.events.filter(function (d, i) {
+            if (d.state == undefined) {
+                d.state = true;
+            }
+            return i < jsonData.events.length;
+        }));
+
+        var newEvent = events.enter()
+            .append("g")
+            .attr("class", "event")
+            .call(drag_this)
+            .each(function (d) {
+                var e = d3.select(this)
+
+                var yOffset = 5;
+                // icon
+                var symbolName;
+                var symbol;
+                var symbolSize;
+                var symbol_x;
+
+                if (d.icon == undefined || d.icon == "circle") {
+                    symbolName = "circle";
+                    symbolSize = 200;
+                    symbol_x = 5 + Math.sqrt(symbolSize);
+                    symbol = d3.symbol().type(d3.symbolCircle).size(symbolSize);
+
+                    e.append("path")
+                        .attr("d", symbol)
+                        .attr("class", "event-" + symbolName)
+                        .classed("event-" + symbolName + "-selected", d.state)
+                        .attr("transform", function (d) {
+                            return "translate(" + symbol_x + "," + 0 + ")";
+                        })
+                        .on("click", eventClick);
+
+                } else {
+
+                    symbolName = d.icon;
+                    symbolSize = 200;
+                    symbol_x = 5 + Math.sqrt(symbolSize);
+                    symbol = d3.symbol().type(d3["symbol" + ucfirst(d.icon)]).size(symbolSize);
+                    e.append("path")
+                        .attr("d", symbol)
+                        .attr("class", "event-" + symbolName)
+                        .classed("event-" + symbolName + "-selected", d.state)
+                        .attr("transform", function (d) {
+                            return "translate(" + symbol_x + "," + 0 + ")";
+                        })
+                        .on("click", eventClick);
+                }
+                // title -
+                if (d.title != undefined) {
+                    e.append("text")
+                        .classed("event-content", true)
+                        // .classed("event-title", true)
+                        .attr("class", function (d) {
+                            if (d.class != undefined) {
+                                return d.class + "-title";
+                            } else {
+                                return "event-title";
+                            }
+                        })
+                        .style("visibility", function (d) {
+                            if (d.state == true) {
+                                return "visible"
+                            } else {
+                                return "hidden"
+                            }
+                        })
+                        .attr('y', function (d, i) {
+                            var y = yOffset;
+                            yOffset += 20;
+                            return y;
+                        })
+                        .attr("x", horizontal_margin + 15)
+                        .text(function (d) {
+                            return d.title;
+                        });
+                }
+                // subTitle - opt.
+                if (d.subTitle != undefined) {
+                    e.append("text")
+                        .classed("event-content", true)
+                        .classed("event-subTitle", true)
+                        .attr("x", horizontal_margin + 15)
+                        .attr('y', function (d, i) {
+                            var y = yOffset;
+                            yOffset += 10
+                            return y;
+                        })
+                        .text(function (d) {
+                            return d.subTitle
+                        })
+                        .style("visibility", function (d) {
+                            if (d.state == true) {
+                                return "visible"
+                            } else {
+                                return "hidden"
+                            }
+                        })
+                }
+
+                // image/video block: add rect + image orposter if defined
+                if (d.imageSet != undefined || d.video != undefined) {
+                    e.append("rect")
+                        .classed("event-content", true)
+                        .classed("event-box", true)
+                        .attr("x", horizontal_margin + 15)
+                        .attr("y", function (d) {
+                            // yOffset += 10;
+                            return yOffset;
+                        })
+                        .attr("width", 160)
+                        .attr("height", 120)
+                        .style("visibility", function (d) {
+                            if (d.state == true) {
+                                return "visible"
+                            } else {
+                                return "hidden"
+                            }
+                        });
+
+                    e.append("image")
+                        .classed("event-content", true)
+                        .attr("x", horizontal_margin + 15)
+                        .attr("y", yOffset)
+                        .attr("width", 160)
+                        // .attr("height", 120)
+                        // .attr("preserveAspectRatio", "xMinYMin slice")
+                        .attr("xlink:href", function (d, i) {
+                            if (d.video != undefined) {
+                                return path.join(__dirname, "assets", "images", d.poster)
+                            } else {
+                                return path.join(__dirname, "assets", "images", d.imageSet[0])
+                            }
+                        })
+                        .style("visibility", function (d) {
+                            if (d.state == true) {
+                                return "visible"
+                            } else {
+                                return "hidden"
+                            }
+                        })
+                        .on("load", function (d, i) {
+                            // size image & background rect 
+                            var rect = d3.select(this.parentNode).selectAll("rect.event-box")
+                            var h = this.getBBox().height;
+                            var w = this.getBBox().width;
+
+
+                            var tmp = calculateAspectRatioFit(w, h, eventImageWidth, eventImageHeight);
+
+                            rect.attr("height", tmp.height);
+                            rect.attr("width", tmp.width);
+
+                            var img = d3.select(this)
+
+                            img.attr("height", tmp.height);
+                            img.attr("width", tmp.width);
+
+                        })
+                        .on("click", function (d, i) {
+                            console.log('image clicked');
+                            
+                        });
+                }
+            });
+
+            console.log('rect',d3.selectAll("rect"));
+            
+            // bounding box
+            // d3.selectAll("rect").call(bb)
+            // d3lb.bbox().infect(d3.selectAll("rect"))
+
+
+        // upperCase first letter of string
+        function ucfirst(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        /**
+ * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
+ * images to fit into a certain area.
+ *
+ * @param {Number} srcWidth Source area width
+ * @param {Number} srcHeight Source area height
+ * @param {Number} maxWidth Fittable area maximum available width
+ * @param {Number} maxHeight Fittable area maximum available height
+ * @return {Object} { width, heigth }
+ */
+function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
+    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    return { width: srcWidth * ratio, height: srcHeight * ratio };
+}
+    //---------------
+    </script>
+</body>
+
+</html>
