@@ -7,7 +7,7 @@
     "FileDescription": "d3-testbed",
     "OriginalFilename": "d3-testbed",
     "ProductName": "d3-testbed",
-    "InternalName": "d3-testbed",
+    "InternalName": "d3-testbed"
   },
   "main": "main.js",
   "scripts": {
