@@ -1,13 +1,13 @@
 {
-  "name": "template",
+  "name": "d3-testbed",
   "version": "1.0.0",
-  "description": "template",
+  "description": "d3-testbed",
   "version-string": {
     "CompanyName": "Roy Pardi",
-    "FileDescription": "template",
-    "OriginalFilename": "template",
-    "ProductName": "template",
-    "InternalName": "template"
+    "FileDescription": "d3-testbed",
+    "OriginalFilename": "d3-testbed",
+    "ProductName": "d3-testbed",
+    "InternalName": "d3-testbed",
   },
   "main": "main.js",
   "scripts": {
