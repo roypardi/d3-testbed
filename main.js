@@ -1,5 +1,6 @@
 'use strict';
 
+//todo: use package.json to populate values here
 
 const electron = require('electron');
 const app = electron.app;
